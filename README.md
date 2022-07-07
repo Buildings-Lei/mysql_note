@@ -13,15 +13,15 @@
 
 #### 数据库操作
 
-查询所有数据库：
+查询所有数据库
 `SHOW DATABASES;`
-查询当前数据库：
+查询当前数据库
 `SELECT DATABASE();`
-创建数据库：
+创建数据库
 `CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];`
-删除数据库：
+删除数据库
 `DROP DATABASE [ IF EXISTS ] 数据库名;`
-使用数据库：
+使用数据库
 `USE 数据库名;`
 
 ##### 注意事项
