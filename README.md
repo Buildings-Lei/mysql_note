@@ -1218,6 +1218,8 @@ select count(distinct substring(email, 1, 5)) / count(*) from tb_user;
 ```
 前缀索引中是有可能碰到相同的索引的情况的（因为选择性可能不为1），所以使用前缀索引进行查询的时候，mysql 会有一个回表查询的过程，确定是否为所需数据。如图中的查询到lvbu6之后还要进行回表，回表完再查xiaoy，看到xiaoy是不需要的数据，则停止查下一个。
 
+![image](https://github.com/Buildings-Lei/mysql_note/tree/main/images/pre.png)
+
 show index 里面的sub_part可以看到接取的长度
 
 #### 单列索引&联合索引
@@ -1232,6 +1234,8 @@ show index 里面的sub_part可以看到接取的长度
 phone 和 name 都建立了索引情况下，这句只会用到phone索引字段。
 
 联合索引的数据组织图：
+
+![image](https://github.com/Buildings-Lei/mysql_note/tree/main/images/uion.png)
 
 
 ##### 注意事项
