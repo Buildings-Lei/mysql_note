@@ -13,14 +13,14 @@
 
 #### 数据库操作
 
-查询所有数据库：
-`SHOW DATABASES;`
+查询所有数据库:
+`SHOW DATABASES;`  
 查询当前数据库：
-`SELECT DATABASE();`
+`SELECT DATABASE();`  
 创建数据库：
-`CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];`
-删除数据库：
-`DROP DATABASE [ IF EXISTS ] 数据库名;`
+`CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];`  
+删除数据库:
+`DROP DATABASE [ IF EXISTS ] 数据库名;`  
 使用数据库：
 `USE 数据库名;`
 
@@ -31,11 +31,11 @@
 #### 表操作
 
 查询当前数据库所有表：
-`SHOW TABLES;`
+`SHOW TABLES;`  
 查询表结构：
-`DESC 表名;`
+`DESC 表名;`  
 查询指定表的建表语句：
-`SHOW CREATE TABLE 表名;`
+`SHOW CREATE TABLE 表名;`  
 
 创建表：
 ```mysql
@@ -50,16 +50,18 @@ CREATE TABLE 表名(
 所有的要用英文的格式
 **最后一个字段后面没有逗号**
 
-添加字段：
-`ALTER TABLE 表名 ADD 字段名 类型(长度) [COMMENT 注释] [约束];`
-例：`ALTER TABLE emp ADD nickname varchar(20) COMMENT '昵称';`
+添加字段： 
+`ALTER TABLE 表名 ADD 字段名 类型(长度) [COMMENT 注释] [约束];`  
+例：`ALTER TABLE emp ADD nickname varchar(20) COMMENT '昵称';`  
 
-修改数据类型：
-`ALTER TABLE 表名 MODIFY 字段名 新数据类型(长度);`
-修改字段名和字段类型：
-`ALTER TABLE 表名 CHANGE 旧字段名 新字段名 类型(长度) [COMMENT 注释] [约束];`
-例：将emp表的nickname字段修改为username，类型为varchar(30)
-`ALTER TABLE emp CHANGE nickname username varchar(30) COMMENT '昵称';`
+修改数据类型： 
+`ALTER TABLE 表名 MODIFY 字段名 新数据类型(长度);` 
+
+修改字段名和字段类型： 
+`ALTER TABLE 表名 CHANGE 旧字段名 新字段名 类型(长度) [COMMENT 注释] [约束];` 
+
+例：将emp表的nickname字段修改为username，类型为varchar(30)  
+`ALTER TABLE emp CHANGE nickname username varchar(30) COMMENT '昵称';`  
 
 删除字段：
 `ALTER TABLE 表名 DROP 字段名;`
@@ -69,6 +71,7 @@ CREATE TABLE 表名(
 
 删除表：
 `DROP TABLE [IF EXISTS] 表名;`
+
 删除表，并重新创建该表：
 `TRUNCATE TABLE 表名;`
 
@@ -76,14 +79,14 @@ CREATE TABLE 表名(
 
 #### 添加数据
 
-指定字段：
-`INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...);`
-全部字段：
-`INSERT INTO 表名 VALUES (值1, 值2, ...);`
+指定字段： 
+`INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...);`  
+全部字段： 
+`INSERT INTO 表名 VALUES (值1, 值2, ...);`  
 
-批量添加数据：
-`INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);`
-`INSERT INTO 表名 VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);`
+批量添加数据：   
+`INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);`  
+`INSERT INTO 表名 VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);`  
 
 ##### 注意事项
 
@@ -93,12 +96,12 @@ CREATE TABLE 表名(
 #### 更新和删除数据
 
 修改数据：
-`UPDATE 表名 SET 字段名1 = 值1, 字段名2 = 值2, ... [ WHERE 条件 ];`
-例：
+`UPDATE 表名 SET 字段名1 = 值1, 字段名2 = 值2, ... [ WHERE 条件 ];`  
+例： 
 `UPDATE emp SET name = 'Jack' WHERE id = 1;`
 
-删除数据：
-`DELETE FROM 表名 [ WHERE 条件 ];`
+删除数据：  
+`DELETE FROM 表名 [ WHERE 条件 ];`  
 
 ### DQL（数据查询语言）
 
@@ -122,27 +125,27 @@ LIMIT
 
 #### 基础查询
 
-查询多个字段：
-`SELECT 字段1, 字段2, 字段3, ... FROM 表名;`
-`SELECT * FROM 表名;`
+查询多个字段：  
+`SELECT 字段1, 字段2, 字段3, ... FROM 表名;`  
+`SELECT * FROM 表名;`  
 
-设置别名：
-`SELECT 字段1 [ AS 别名1 ], 字段2 [ AS 别名2 ], 字段3 [ AS 别名3 ], ... FROM 表名;`
-`SELECT 字段1 [ 别名1 ], 字段2 [ 别名2 ], 字段3 [ 别名3 ], ... FROM 表名;`
+设置别名：  
+`SELECT 字段1 [ AS 别名1 ], 字段2 [ AS 别名2 ], 字段3 [ AS 别名3 ], ... FROM 表名;`  
+`SELECT 字段1 [ 别名1 ], 字段2 [ 别名2 ], 字段3 [ 别名3 ], ... FROM 表名;`  
 
-去除重复记录：
-`SELECT DISTINCT 字段列表 FROM 表名;`
+去除重复记录：  
+`SELECT DISTINCT 字段列表 FROM 表名;`  
 
-转义：
-`SELECT * FROM 表名 WHERE name LIKE '/_张三' ESCAPE '/'`
-/ 之后的\_不作为通配符
+转义：  
+`SELECT * FROM 表名 WHERE name LIKE '/_张三' ESCAPE '/'`  
+/ 之后的\_不作为通配符  
 
 #### 条件查询
 
-语法：
-`SELECT 字段列表 FROM 表名 WHERE 条件列表;`
+语法：  
+`SELECT 字段列表 FROM 表名 WHERE 条件列表;`  
 
-条件：
+条件：  
 
 | 比较运算符          | 功能                                        |
 | ------------------- | ------------------------------------------- |
@@ -163,7 +166,7 @@ LIMIT
 | OR 或 &#124;&#124; | 或者（多个条件任意一个成立） |
 | NOT 或 !           | 非，不是                     |
 
-例子：
+例子：  
 ```mysql
 -- 年龄等于30
 select * from employee where age = 30;
@@ -213,8 +216,8 @@ select * from employee where idcard like '%X';
 
 #### 分组查询
 
-语法：
-`SELECT 字段列表 FROM 表名 [ WHERE 条件 ] GROUP BY 分组字段名 [ HAVING 分组后的过滤条件 ];`
+语法：  
+`SELECT 字段列表 FROM 表名 [ WHERE 条件 ] GROUP BY 分组字段名 [ HAVING 分组后的过滤条件 ];`  
 
 where 和 having 的区别：
 
@@ -243,7 +246,7 @@ select workaddress, count(*) address_count from employee where age < 45 group by
 
 #### 排序查询
 
-语法：
+语法：  
 `SELECT 字段列表 FROM 表名 ORDER BY 字段1 排序方式1, 字段2 排序方式2;`
 
 排序方式：
@@ -267,8 +270,8 @@ SELECT * FROM employee ORDER BY age ASC, entrydate DESC;
 
 #### 分页查询
 
-语法：
-`SELECT 字段列表 FROM 表名 LIMIT 起始索引, 查询记录数;`
+语法：  
+`SELECT 字段列表 FROM 表名 LIMIT 起始索引, 查询记录数;`  
 
 例子：
 
@@ -300,13 +303,13 @@ USER mysql;
 SELECT * FROM user;
 ```
 
-创建用户:
+创建用户:  
 `CREATE USER '用户名'@'主机名' IDENTIFIED BY '密码';`
 
-修改用户密码：
+修改用户密码：  
 `ALTER USER '用户名'@'主机名' IDENTIFIED WITH mysql_native_password BY '新密码';`
 
-删除用户：
+删除用户：  
 `DROP USER '用户名'@'主机名';`
 
 例子：
@@ -342,15 +345,15 @@ drop user 'test'@'localhost';
 | DROP                | 删除数据库/表/视图 |
 | CREATE              | 创建数据库/表      |
 
-更多权限请看[权限一览表](#权限一览表 "权限一览表")
+更多权限请看[权限一览表](#权限一览表 "权限一览表")  
 
-查询权限：
+查询权限：  
 `SHOW GRANTS FOR '用户名'@'主机名';`
 
-授予权限：
+授予权限：  
 `GRANT 权限列表 ON 数据库名.表名 TO '用户名'@'主机名';`
 
-撤销权限：
+撤销权限：  
 `REVOKE 权限列表 ON 数据库名.表名 FROM '用户名'@'主机名';`
 
 ##### 注意事项
@@ -510,15 +513,15 @@ CREATE TABLE 表名(
 	字段名 字段类型,
 	...
 	[CONSTRAINT] [外键名称] FOREIGN KEY(外键字段名) REFERENCES 主表(主表列名)
-);
+);  
 ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段名) REFERENCES 主表(主表列名);
 
--- 例子
-alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references dept(id);
+-- 例子  
+alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references dept(id);  
 ```
 
-删除外键：
-`ALTER TABLE 表名 DROP FOREIGN KEY 外键名;`
+删除外键：  
+`ALTER TABLE 表名 DROP FOREIGN KEY 外键名;`  
 
 #### 删除/更新行为
 
@@ -530,8 +533,8 @@ alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references de
 | SET NULL  | 当在父表中删除/更新对应记录时，首先检查该记录是否有对应外键，如果有则设置子表中该外键值为null（要求该外键允许为null）  |
 | SET DEFAULT  | 父表有变更时，子表将外键设为一个默认值（Innodb不支持）  |
 
-更改删除/更新行为：
-`ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段) REFERENCES 主表名(主表字段名) ON UPDATE 行为 ON DELETE 行为;`
+更改删除/更新行为：  
+`ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段) REFERENCES 主表名(主表字段名) ON UPDATE 行为 ON DELETE 行为;`  
 
 ## 多表查询
 
@@ -543,41 +546,41 @@ alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references de
 
 #### 一对多
 
-案例：部门与员工
-关系：一个部门对应多个员工，一个员工对应一个部门
-实现：在多的一方建立外键，指向一的一方的主键
+案例：部门与员工  
+关系：一个部门对应多个员工，一个员工对应一个部门  
+实现：在多的一方建立外键，指向一的一方的主键  
 
 #### 多对多
 
-案例：学生与课程
-关系：一个学生可以选多门课程，一门课程也可以供多个学生选修
-实现：建立第三张中间表，中间表至少包含两个外键，分别关联两方主键
+案例：学生与课程  
+关系：一个学生可以选多门课程，一门课程也可以供多个学生选修  
+实现：建立第三张中间表，中间表至少包含两个外键，分别关联两方主键  
 
 #### 一对一
 
-案例：用户与用户详情
-关系：一对一关系，多用于单表拆分，将一张表的基础字段放在一张表中，其他详情字段放在另一张表中，以提升操作效率
-实现：在任意一方加入外键，关联另外一方的主键，并且设置外键为唯一的（UNIQUE）
+案例：用户与用户详情  
+关系：一对一关系，多用于单表拆分，将一张表的基础字段放在一张表中，其他详情字段放在另一张表中，以提升操作效率  
+实现：在任意一方加入外键，关联另外一方的主键，并且设置外键为唯一的（UNIQUE）  
 
 ### 查询
 
-合并查询（笛卡尔积，会展示所有组合结果）：
-`select * from employee, dept;`
+合并查询（笛卡尔积，会展示所有组合结果）：  
+`select * from employee, dept;`  
 
-> 笛卡尔积：两个集合A集合和B集合的所有组合情况（在多表查询时，需要消除无效的笛卡尔积）
+> 笛卡尔积：两个集合A集合和B集合的所有组合情况（在多表查询时，需要消除无效的笛卡尔积）  
 
-消除无效笛卡尔积：
-`select * from employee, dept where employee.dept = dept.id;`
+消除无效笛卡尔积：  
+`select * from employee, dept where employee.dept = dept.id;`  
 
 ### 内连接查询
 
 内连接查询的是两张表交集的部分
 
-隐式内连接：
-`SELECT 字段列表 FROM 表1, 表2 WHERE 条件 ...;`
+隐式内连接：  
+`SELECT 字段列表 FROM 表1, 表2 WHERE 条件 ...;`   
 
-显式内连接：
-`SELECT 字段列表 FROM 表1 [ INNER ] JOIN 表2 ON 连接条件 ...;`
+显式内连接：  
+`SELECT 字段列表 FROM 表1 [ INNER ] JOIN 表2 ON 连接条件 ...;`  
 
 显式性能比隐式高
 
@@ -593,43 +596,43 @@ select e.name, d.name from employee as e inner join dept as d on e.dept = d.id;
 
 ### 外连接查询
 
-左外连接：
-查询左表所有数据，以及两张表交集部分数据
-`SELECT 字段列表 FROM 表1 LEFT [ OUTER ] JOIN 表2 ON 条件 ...;`
-相当于查询表1的所有数据，包含表1和表2交集部分数据
+左外连接：  
+查询左表所有数据，以及两张表交集部分数据  
+`SELECT 字段列表 FROM 表1 LEFT [ OUTER ] JOIN 表2 ON 条件 ...;`  
+相当于查询表1的所有数据，包含表1和表2交集部分数据  
 
-右外连接：
-查询右表所有数据，以及两张表交集部分数据
-`SELECT 字段列表 FROM 表1 RIGHT [ OUTER ] JOIN 表2 ON 条件 ...;`
+右外连接：  
+查询右表所有数据，以及两张表交集部分数据  
+`SELECT 字段列表 FROM 表1 RIGHT [ OUTER ] JOIN 表2 ON 条件 ...;`  
 
 例子：
 
 ```mysql
 -- 左
-select e.*, d.name from employee as e left outer join dept as d on e.dept = d.id;
-select d.name, e.* from dept d left outer join emp e on e.dept = d.id;  -- 这条语句与下面的语句效果一样
+select e.*, d.name from employee as e left outer join dept as d on e.dept = d.id;  
+select d.name, e.* from dept d left outer join emp e on e.dept = d.id;  -- 这条语句与下面的语句效果一样  
 -- 右
-select d.name, e.* from employee as e right outer join dept as d on e.dept = d.id;
+select d.name, e.* from employee as e right outer join dept as d on e.dept = d.id;  
 ```
 
-左连接可以查询到没有dept的employee，右连接可以查询到没有employee的dept
+左连接可以查询到没有dept的employee，右连接可以查询到没有employee的dept  
 
 ### 自连接查询
 
-当前表与自身的连接查询，自连接必须使用表别名
+当前表与自身的连接查询，自连接必须使用表别名  
 
-语法：
-`SELECT 字段列表 FROM 表A 别名A JOIN 表A 别名B ON 条件 ...;`
+语法：  
+`SELECT 字段列表 FROM 表A 别名A JOIN 表A 别名B ON 条件 ...;`  
 
-自连接查询，可以是内连接查询，也可以是外连接查询
+自连接查询，可以是内连接查询，也可以是外连接查询  
 
 例子：
 
-```mysql
--- 查询员工及其所属领导的名字
-select a.name, b.name from employee a, employee b where a.manager = b.id;
--- 没有领导的也查询出来
-select a.name, b.name from employee a left join employee b on a.manager = b.id;
+```mysql  
+-- 查询员工及其所属领导的名字  
+select a.name, b.name from employee a, employee b where a.manager = b.id;  
+-- 没有领导的也查询出来  
+select a.name, b.name from employee a left join employee b on a.manager = b.id;  
 ```
 
 ### 联合查询 union, union all
@@ -651,9 +654,9 @@ SELECT 字段列表 FROM 表B ...
 
 ### 子查询
 
-SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。
-`SELECT * FROM t1 WHERE column1 = ( SELECT column1 FROM t2);`
-**子查询外部的语句可以是 INSERT / UPDATE / DELETE / SELECT 的任何一个**
+SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。  
+`SELECT * FROM t1 WHERE column1 = ( SELECT column1 FROM t2);`  
+**子查询外部的语句可以是 INSERT / UPDATE / DELETE / SELECT 的任何一个**  
 
 根据子查询结果可以分为：
 
@@ -670,8 +673,8 @@ SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。
 
 #### 标量子查询
 
-子查询返回的结果是单个值（数字、字符串、日期等）。
-常用操作符：- < > > >= < <=
+子查询返回的结果是单个值（数字、字符串、日期等）。  
+常用操作符：- < > > >= < <=  
 
 例子：
 
@@ -680,18 +683,18 @@ SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。
 select id from dept where name = '销售部';
 -- 根据销售部部门ID，查询员工信息
 select * from employee where dept = 4;
--- 合并（子查询）
-select * from employee where dept = (select id from dept where name = '销售部');
+-- 合并（子查询）  
+select * from employee where dept = (select id from dept where name = '销售部');  
 
--- 查询xxx入职之后的员工信息
-select * from employee where entrydate > (select entrydate from employee where name = 'xxx');
+-- 查询xxx入职之后的员工信息  
+select * from employee where entrydate > (select entrydate from employee where name = 'xxx');  
 ```
 
 #### 列子查询
 
-返回的结果是一列（可以是多行）。
+返回的结果是一列（可以是多行）。  
 
-常用操作符：
+常用操作符：  
 
 | 操作符  | 描述  |
 | ------------ | ------------ |
@@ -703,8 +706,8 @@ select * from employee where entrydate > (select entrydate from employee where n
 
 例子：
 
-```mysql
--- 查询销售部和市场部的所有员工信息
+```mysql  
+-- 查询销售部和市场部的所有员工信息  
 select * from employee where dept in (select id from dept where name = '销售部' or name = '市场部');
 -- 查询比财务部所有人工资都高的员工信息
 select * from employee where salary > all(select salary from employee where dept = (select id from dept where name = '财务部'));
@@ -714,21 +717,21 @@ select * from employee where salary > any (select salary from employee where dep
 
 #### 行子查询
 
-返回的结果是一行（可以是多列）。
+返回的结果是一行（可以是多列）。  
 常用操作符：=, <, >, IN, NOT IN
 
 例子：
 
 ```mysql
--- 查询与xxx的薪资及直属领导相同的员工信息
-select * from employee where (salary, manager) = (12500, 1);
-select * from employee where (salary, manager) = (select salary, manager from employee where name = 'xxx');
+-- 查询与xxx的薪资及直属领导相同的员工信息  
+select * from employee where (salary, manager) = (12500, 1);  
+select * from employee where (salary, manager) = (select salary, manager from employee where name = 'xxx');  
 ```
 
 #### 表子查询
 
-返回的结果是多行多列
-常用操作符：IN
+返回的结果是多行多列  
+常用操作符：IN  
 
 例子：
 
@@ -765,10 +768,10 @@ COMMIT;
 ROLLBACK;
 
 -- 设置手动提交后上面代码改为：
-select * from account where name = '张三';
-update account set money = money - 1000 where name = '张三';
-update account set money = money + 1000 where name = '李四';
-commit;
+select * from account where name = '张三';  
+update account set money = money - 1000 where name = '张三';  
+update account set money = money + 1000 where name = '李四';  
+commit;  
 ```
 
 操作方式二：
@@ -789,7 +792,7 @@ update account set money = money - 1000 where name = '张三';
 update account set money = money + 1000 where name = '李四';
 commit;
 ```
-开启事务后，只有手动提交才会改变数据库中的数据。
+开启事务后，只有手动提交才会改变数据库中的数据。  
 ### 四大特性ACID
 
 - 原子性(Atomicity)：事务是不可分割的最小操作但愿，要么全部成功，要么全部失败
@@ -819,11 +822,11 @@ commit;
 - √表示在当前隔离级别下该问题会出现
 - Serializable 性能最低；Read uncommitted 性能最高，数据安全性最差
 
-查看事务隔离级别：
-`SELECT @@TRANSACTION_ISOLATION;`
-设置事务隔离级别：
-`SET [ SESSION | GLOBAL ] TRANSACTION ISOLATION LEVEL {READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE };`
-SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对所有会话有效
+查看事务隔离级别：  
+`SELECT @@TRANSACTION_ISOLATION;`  
+设置事务隔离级别：  
+`SET [ SESSION | GLOBAL ] TRANSACTION ISOLATION LEVEL {READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE };  `
+SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对所有会话有效  
 
 # 进阶篇
 
@@ -831,17 +834,17 @@ SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对�
 
 MySQL体系结构：
 
-![结构图](https://dhc.pythonanywhere.com/media/editor/MySQL体系结构_20220315034329549927.png "结构图")
-![层级描述](https://dhc.pythonanywhere.com/media/editor/MySQL体系结构层级含义_20220315034359342837.png "层级描述")
+![结构图](https://dhc.pythonanywhere.com/media/editor/MySQL体系结构_20220315034329549927.png "结构图")  
+![层级描述](https://dhc.pythonanywhere.com/media/editor/MySQL体系结构层级含义_20220315034359342837.png "层级描述")  
 
-存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。
-默认存储引擎是InnoDB。
+存储引擎就是存储数据、建立索引、更新/查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。  
+默认存储引擎是InnoDB。  
 
-相关操作：
+相关操作：  
 
 ```mysql
 -- 查询建表语句
-show create table account;
+show create table account;  
 -- 建表时指定存储引擎
 CREATE TABLE 表名(
 	...
@@ -852,7 +855,7 @@ show engines;
 
 ### InnoDB
 
-InnoDB 是一种兼顾高可靠性和高性能的通用存储引擎，在 MySQL 5.5 之后，InnoDB 是默认的 MySQL 引擎。
+InnoDB 是一种兼顾高可靠性和高性能的通用存储引擎，在 MySQL 5.5 之后，InnoDB 是默认的 MySQL 引擎。  
 
 特点：
 
@@ -872,11 +875,11 @@ InnoDB 是一种兼顾高可靠性和高性能的通用存储引擎，在 MySQL 
 `show variables like 'innodb_file_per_table';`
 
 从idb文件提取表结构数据：
-（在cmd运行）
+（在cmd运行）  
 `ibd2sdi xxx.ibd`
 
-InnoDB 逻辑存储结构：
-![InnoDB逻辑存储结构](https://dhc.pythonanywhere.com/media/editor/逻辑存储结构_20220316030616590001.png "InnoDB逻辑存储结构")
+InnoDB 逻辑存储结构：  
+![InnoDB逻辑存储结构](https://dhc.pythonanywhere.com/media/editor/逻辑存储结构_20220316030616590001.png "InnoDB逻辑存储结构")  
 
 ### MyISAM
 
@@ -936,47 +939,47 @@ Memory 引擎的表数据是存储在内存中的，受硬件问题、断电问�
 
 ### 查看执行频次
 
-查看当前数据库的 INSERT, UPDATE, DELETE, SELECT 访问频次：
-`SHOW GLOBAL STATUS LIKE 'Com_______';` 或者 `SHOW SESSION STATUS LIKE 'Com_______';`
-例：`show global status like 'Com_______'`
+查看当前数据库的 INSERT, UPDATE, DELETE, SELECT 访问频次：  
+`SHOW GLOBAL STATUS LIKE 'Com_______';` 或者 `SHOW SESSION STATUS LIKE 'Com_______';`  
+例：`show global status like 'Com_______'`  
 
 ### 慢查询日志
 
-慢查询日志记录了所有执行时间超过指定参数（long_query_time，单位：秒，默认10秒）的所有SQL语句的日志。
-MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（/etc/my.cnf）中配置如下信息：
-	# 开启慢查询日志开关
-	slow_query_log=1
-	# 设置慢查询日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志
-	long_query_time=2
-更改后记得重启MySQL服务，日志文件位置：/var/lib/mysql/localhost-slow.log
+慢查询日志记录了所有执行时间超过指定参数（long_query_time，单位：秒，默认10秒）的所有SQL语句的日志。  
+MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（/etc/my.cnf）中配置如下信息：  
+	# 开启慢查询日志开关  
+	slow_query_log=1  
+	# 设置慢查询日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志  
+	long_query_time=2  
+更改后记得重启MySQL服务，日志文件位置：/var/lib/mysql/localhost-slow.log  
 
-查看慢查询日志开关状态：
-`show variables like 'slow_query_log';`
+查看慢查询日志开关状态：  
+`show variables like 'slow_query_log';`  
 
 ### profile
 
-show profile 能在做SQL优化时帮我们了解时间都耗费在哪里。通过 have_profiling 参数，能看到当前 MySQL 是否支持 profile 操作：
-`SELECT @@have_profiling;`
-profiling 默认关闭，可以通过set语句在session/global级别开启 profiling：
-`SET profiling = 1;`
-查看所有语句的耗时：
-`show profiles;`
-查看指定query_id的SQL语句各个阶段的耗时：
-`show profile for query query_id;`
-查看指定query_id的SQL语句CPU的使用情况
-`show profile cpu for query query_id;`
+show profile 能在做SQL优化时帮我们了解时间都耗费在哪里。通过 have_profiling 参数，能看到当前 MySQL 是否支持 profile 操作：  
+`SELECT @@have_profiling;`  
+profiling 默认关闭，可以通过set语句在session/global级别开启 profiling：  
+`SET profiling = 1;`  
+查看所有语句的耗时：  
+`show profiles;`  
+查看指定query_id的SQL语句各个阶段的耗时：  
+`show profile for query query_id;`  
+查看指定query_id的SQL语句CPU的使用情况  
+`show profile cpu for query query_id;`  
 
 ### explain
 
-EXPLAIN 或者 DESC 命令获取 MySQL 如何执行 SELECT 语句的信息，包括在 SELECT 语句执行过程中表如何连接和连接的顺序。
-语法：
-	# 直接在select语句之前加上关键字 explain / desc
-	EXPLAIN SELECT 字段列表 FROM 表名 HWERE 条件;
+EXPLAIN 或者 DESC 命令获取 MySQL 如何执行 SELECT 语句的信息，包括在 SELECT 语句执行过程中表如何连接和连接的顺序。  
+语法：  
+	# 直接在select语句之前加上关键字 explain / desc  
+	EXPLAIN SELECT 字段列表 FROM 表名 HWERE 条件;  
 
-EXPLAIN 各字段含义：
+EXPLAIN 各字段含义：  
 
-- id：select 查询的序列号，表示查询中执行 select 子句或者操作表的顺序（id相同，执行顺序从上到下；id不同，值越大越先执行）
-- select_type：表示 SELECT 的类型，常见取值有 SIMPLE（简单表，即不适用表连接或者子查询）、PRIMARY（主查询，即外层的查询）、UNION（UNION中的第二个或者后面的查询语句）、SUBQUERY（SELECT/WHERE之后包含了子查询）等
+- id：select 查询的序列号，表示查询中执行 select 子句或者操作表的顺序（id相同，执行顺序从上到下；id不同，值越大越先执行）  
+- select_type：表示 SELECT 的类型，常见取值有 SIMPLE（简单表，即不适用表连接或者子查询）、PRIMARY（主查询，即外层的查询）、UNION（UNION中的第二个或者后面的查询语句）、   SUBQUERY（SELECT/WHERE之后包含了子查询）等  
 - type：表示连接类型，性能由好到差的连接类型为 NULL、system、const、eq_ref、ref、range、index、all
 - possible_key：可能应用在这张表上的索引，一个或多个
 - Key：实际使用的索引，如果为 NULL，则没有使用索引
@@ -992,7 +995,7 @@ EXPLAIN 各字段含义：
 
 优点：
 
-- 提高数据检索效率，降低数据库的IO成本
+- 提高数据检索效率，降低数据库的IO成本  
 - 通过索引列对数据进行排序，降低数据排序的成本，降低CPU的消耗
 
 缺点：
@@ -1116,24 +1119,24 @@ select * from user where name = 'Arm';
 
 2\. InnoDB 主键索引的 B+Tree 高度为多少？
 
-答：假设一行数据大小为1k，一页中可以存储16行这样的数据。InnoDB 的指针占用6个字节的空间，主键假设为bigint，占用字节数为8.
-可得公式：`n * 8 + (n + 1) * 6 = 16 * 1024`，其中 8 表示 bigint 占用的字节数，n 表示当前节点存储的key的数量，(n + 1) 表示指针数量（比key多一个）。算出n约为1170。
+答：假设一行数据大小为1k，一页中可以存储16行这样的数据。InnoDB 的指针占用6个字节的空间，主键假设为bigint，占用字节数为8.  
+可得公式：`n * 8 + (n + 1) * 6 = 16 * 1024`，其中 8 表示 bigint 占用的字节数，n 表示当前节点存储的key的数量，(n + 1) 表示指针数量（比key多一个）。算出n约为1170。  
 
-如果树的高度为2，那么他能存储的数据量大概为：`1171 * 16 = 18736`；
-如果树的高度为3，那么他能存储的数据量大概为：`1171 * 1171 * 16 = 21939856`。
+如果树的高度为2，那么他能存储的数据量大概为：`1171 * 16 = 18736`；  
+如果树的高度为3，那么他能存储的数据量大概为：`1171 * 1171 * 16 = 21939856`。  
 
-另外，如果有成千上万的数据，那么就要考虑分表，涉及运维篇知识。
+另外，如果有成千上万的数据，那么就要考虑分表，涉及运维篇知识。  
 
 ### 语法
 
-创建索引：
-`CREATE [ UNIQUE | FULLTEXT ] INDEX index_name ON table_name (index_col_name, ...);`
-如果不加 CREATE 后面不加索引类型参数，则创建的是常规索引
+创建索引：  
+`CREATE [ UNIQUE | FULLTEXT ] INDEX index_name ON table_name (index_col_name, ...);`  
+如果不加 CREATE 后面不加索引类型参数，则创建的是常规索引  
 
-查看索引：
-`SHOW INDEX FROM table_name;`
+查看索引：  
+`SHOW INDEX FROM table_name;`  
 
-删除索引：
+删除索引：  
 `DROP INDEX index_name ON table_name;`
 
 案例：
@@ -1148,30 +1151,30 @@ create index idx_user_pro_age_stat on tb_user(profession, age, status);
 -- 为email建立合适的索引来提升查询效率
 create index idx_user_email on tb_user(email);
 
--- 删除索引
-drop index idx_user_email on tb_user;
+-- 删除索引  
+drop index idx_user_email on tb_user;  
 ```
 
 ### 使用规则
 
 #### 最左前缀法则
 
-如果索引关联了多列（联合索引），要遵守最左前缀法则，最左前缀法则指的是查询从索引的最左列开始，并且不跳过索引中的列。
-如果跳跃某一列，索引将部分失效（后面的字段索引失效）。跳过的话，后面的排序就无从说起了。最左前缀法则在用select的时候，和放的位置是没有关系的，只要存在就行。
+如果索引关联了多列（联合索引），要遵守最左前缀法则，最左前缀法则指的是查询从索引的最左列开始，并且不跳过索引中的列。  
+如果跳跃某一列，索引将部分失效（后面的字段索引失效）。跳过的话，后面的排序就无从说起了。最左前缀法则在用select的时候，和放的位置是没有关系的，只要存在就行。  
 
-联合索引中，出现范围查询（<, >），范围查询右侧的列索引失效。可以用>=或者<=来规避索引失效问题。
+联合索引中，出现范围查询（<, >），范围查询右侧的列索引失效。可以用>=或者<=来规避索引失效问题。  
 
 #### 索引失效情况
 
-1. 在索引列上进行运算操作，索引将失效。如：`explain select * from tb_user where substring(phone, 10, 2) = '15';` 换成 `explain select * from tb_user where phone = '17799990015';`这是可以的。
-2. 字符串类型字段使用时，不加引号，索引将失效。如：`explain select * from tb_user where phone = 17799990015;`，此处phone的值没有加引号
-3. 模糊查询中，如果仅仅是尾部模糊匹配，索引不会是失效；如果是头部模糊匹配，索引失效。如：`explain select * from tb_user where profession like '%工程';`，前后都有 % 也会失效。`explain select * from tb_user where profession like '软件%';` 这个是不会失效的，只有前面加了%才会失效。
+1. 在索引列上进行运算操作，索引将失效。如：`explain select * from tb_user where substring(phone, 10, 2) = '15';` 换成 `explain select * from tb_user where phone = '17799990015';`这是可以的。  
+2. 字符串类型字段使用时，不加引号，索引将失效。如：`explain select * from tb_user where phone = 17799990015;`，此处phone的值没有加引号  
+3. 模糊查询中，如果仅仅是尾部模糊匹配，索引不会是失效；如果是头部模糊匹配，索引失效。如：`explain select * from tb_user where profession like '%工程';`，前后都有 % 也会失效。`explain select * from tb_user where profession like '软件%';` 这个是不会失效的，只有前面加了%才会失效。  
 4. 用 or 分割开的条件，如果 or 其中一个条件的列没有索引，那么涉及的索引都不会被用到。
 5. 如果 MySQL 评估使用索引比全表更慢，则不使用索引。因为只要有一个没有索引，另外一个用不用索引都没有意义，都要进行全表扫描。所以就无需用索引。
 
 #### SQL 提示
 
-是优化数据库的一个重要手段，简单来说，就是在SQL语句中加入一些人为的提示来达到优化操作的目的。
+是优化数据库的一个重要手段，简单来说，就是在SQL语句中加入一些人为的提示来达到优化操作的目的。  
 
 例如，使用索引：
 `explain select * from tb_user use index(idx_user_pro) where profession="软件工程";`
@@ -1190,14 +1193,17 @@ explain 中 extra 字段含义：
 `using index condition`：查找使用了索引，但是需要回表查询数据
 `using where; using index;`：查找使用了索引，但是需要的数据都在索引列中能找到，所以不需要回表查询
 
+
 覆盖索引：
 如果在生成的二级索引（辅助索引）中可以一次性获得select所需要的字段，不需要回表查询。
 
-如果在聚集索引中直接能找到对应的行，则直接返回行数据，只需要一次查询，哪怕是select \*；
-如果在辅助索引（二级索引）中找聚集索引，如`select id, name from xxx where name='xxx';`，也只需要通过辅助索引(name)查找到对应的id，返回name和name索引对应的id即可，只需要一次查询；
-如果是通过辅助索引查找其他字段，则需要回表查询，如`select id, name, gender from xxx where name='xxx';`
+如果在聚集索引中直接能找到对应的行，则直接返回行数据，只需要一次查询，哪怕是select \*；  
+如果在辅助索引（二级索引）中找聚集索引，如`select id, name from xxx where name='xxx';`，也只需要通过辅助索引(name)查找到对应的id，返回name和name索引对应的id即可，只需要一次查询； 
+如果是通过辅助索引查找其他字段，则需要回表查询，如`select id, name, gender from xxx where name='xxx';`  
 
-所以尽量不要用`select *`，容易出现回表查询，降低效率，除非有联合索引包含了所有字段
+所以尽量不要用`select *`，容易出现回表查询，降低效率，除非有联合索引包含了所有字段  
+
+
 
 面试题：一张表，有四个字段（id, username, password, status），由于数据量大，需要对以下SQL语句进行优化，该如何进行才是最优方案：
 `select id, username, password from tb_user where username='itcast';`
@@ -1209,16 +1215,19 @@ username和password字段建立联合索引的叶子节点挂的就是 id 所以
 
 当字段类型为字符串（varchar, text等）时，有时候需要索引很长的字符串，这会让索引变得很大，查询时，浪费大量的磁盘IO，影响查询效率，此时可以只降字符串的一部分前缀，建立索引，这样可以大大节约索引空间，从而提高索引效率。
 
-语法：`create index idx_xxxx on table_name(columnn(n));`
-前缀长度：可以根据索引的选择性来决定，而选择性是指不重复的索引值（基数）和数据表的记录总数的比值，索引选择性越高则查询效率越高，唯一索引的选择性是1，这是最好的索引选择性，性能也是最好的。
-求选择性公式：
+语法：`create index idx_xxxx on table_name(columnn(n));`  
+前缀长度：可以根据索引的选择性来决定，而选择性是指不重复的索引值（基数）和数据表的记录总数的比值，索引选择性越高则查询效率越高，唯一索引的选择性是1，这是最好的索引选择性，性能也是最好的。  
+
+求选择性公式：  
 ```mysql
 select count(distinct email) / count(*) from tb_user;
 select count(distinct substring(email, 1, 5)) / count(*) from tb_user;
 ```
 前缀索引中是有可能碰到相同的索引的情况的（因为选择性可能不为1），所以使用前缀索引进行查询的时候，mysql 会有一个回表查询的过程，确定是否为所需数据。如图中的查询到lvbu6之后还要进行回表，回表完再查xiaoy，看到xiaoy是不需要的数据，则停止查下一个。
 
-![image](https://github.com/Buildings-Lei/mysql_note/tree/main/images/pre.png)
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/pre.png "索引流程")
+
+
 
 show index 里面的sub_part可以看到接取的长度
 
@@ -1230,12 +1239,12 @@ show index 里面的sub_part可以看到接取的长度
 
 单列索引情况：
 
-`explain select id, phone, name from tb_user where phone = '17799990010' and name = '韩信';`
+`explain select id, phone, name from tb_user where phone = '17799990010' and name = '韩信';`  
 phone 和 name 都建立了索引情况下，这句只会用到phone索引字段。
 
 联合索引的数据组织图：
 
-![image](https://github.com/Buildings-Lei/mysql_note/tree/main/images/uion.png)
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/uion.png)
 
 ##### 注意事项
 
@@ -1278,8 +1287,10 @@ load data local infile '/root/sql1.log' into table 'tb_user' fields terminated b
 
 数据组织方式：在InnoDB存储引擎中，表数据都是根据主键顺序组织存放的，这种存储方式的表称为索引组织表（Index organized table, IOT）
 
-主键的顺序的插入过程如下：
-插入图片keysort.png
+主键的顺序的插入过程如下：  
+
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/keySort.png)
+
 但是如果主键是乱序插入的话，就会导致需要插入的位置为中间的位置，会有页分裂的过程。
 
 页分裂：页可以为空，也可以填充一般，也可以填充100%，每个页包含了2-N行数据（如果一行数据过大，会行溢出），根据主键排列。
@@ -1338,13 +1349,13 @@ select * from tb_sku as s, (select id from tb_sku order by id limit 9000000, 10)
 
 ### count优化
 
-MyISAM 引擎把一个表的总行数存在了磁盘上，因此执行 count(\*) 的时候会直接返回这个数，效率很高（前提是不适用where）；
-InnoDB 在执行 count(\*) 时，需要把数据一行一行地从引擎里面读出来，然后累计计数。
-优化方案：自己计数，如创建key-value表存储在内存或硬盘，或者是用redis
+MyISAM 引擎把一个表的总行数存在了磁盘上，因此执行 count(\*) 的时候会直接返回这个数，效率很高（前提是不适用where）；  
+InnoDB 在执行 count(\*) 时，需要把数据一行一行地从引擎里面读出来，然后累计计数。  
+优化方案：自己计数，如创建key-value表存储在内存或硬盘，或者是用redis  
 
 count的几种用法：
 
-- 如果count函数的参数（count里面写的那个字段）不是NULL（字段值不为NULL），累计值就加一，最后返回累计值
+- 如果count函数的参数（count里面写的那个字段）不是NULL（字段值不为NULL），累计值就加一，最后返回累计值 
 - 用法：count(\*)、count(主键)、count(字段)、count(1)
 - count(主键)跟count(\*)一样，因为主键不能为空；count(字段)只计算字段值不为NULL的行；count(1)引擎会为每行添加一个1，然后就count这个1，返回结果也跟count(\*)一样；count(null)返回0
 
@@ -1363,25 +1374,25 @@ InnoDB 的行锁是针对索引加的锁，不是针对记录加的锁，并且�
 
 
 如以下两条语句：
-`update student set no = '123' where id = 1;`，这句由于id有主键索引，所以只会锁这一行；
-`update student set no = '123' where name = 'test';`，这句由于name没有索引，所以会把整张表都锁住进行数据更新，解决方法是给name字段添加索引，就可以由表锁变成行锁。
+`update student set no = '123' where id = 1;`，这句由于id有主键索引，所以只会锁这一行；  
+`update student set no = '123' where name = 'test';`，这句由于name没有索引，所以会把整张表都锁住进行数据更新，解决方法是给name字段添加索引，就可以由表锁变成行锁。  
 
 
 ## 视图
 
-视图（View）是一种虚拟存在的表。视图中的数据并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。
-通俗的讲，视图只保存了查询的SQL逻辑，不保存查询结果。所以我们在创建视图的时候，主要的工作就落在创建这条SQL查询语句上。
+视图（View）是一种虚拟存在的表。视图中的数据并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。  
+通俗的讲，视图只保存了查询的SQL逻辑，不保存查询结果。所以我们在创建视图的时候，主要的工作就落在创建这条SQL查询语句上。  
 
 ### 创建视图
 
-`CREATE [ OR REPLACE ] VIEW 视图名称[（列名列表）] AS SELECT 语句 [ WITH [ CASCADED | LOCAL ] CHECK OPTION ]`
+`CREATE [ OR REPLACE ] VIEW 视图名称[（列名列表）] AS SELECT 语句 [ WITH [ CASCADED | LOCAL ] CHECK OPTION ]`  
 
-例子：
-` create or replace view stu_wll as select id,name from student where id<=10; `
+> 例子： ` create or replace view stu_wll as select id,name from student where id<=10; `
 
 ### 查询视图
-查看创建视图语句：`SHOW CREATE VIEW `视图名称；
-查看视图数据：`SELECT*FROM ` 视图名称；
+查看创建视图语句： `SHOW CREATE VIEW `视图名称；  
+
+查看视图数据：`SELECT*FROM ` 视图名称；  
 `show create view stu_v_1;`
 
 ### 修改视图
@@ -1402,15 +1413,13 @@ NOTE：如果没有开检查选项就不会进行检查。不同版本是不同�
 #### CASCADED
 `级联，一旦选择了这个选项，除了会检查创建视图时候的条件，还会检查所依赖视图的条件。`
 
-比如下面的例子：
-创建stu_V_l 视图，id是小于等于 20的。
+> 比如下面的例子：创建stu_V_l 视图，id是小于等于 20的。  
 `create or replace view stu_V_l as select id,name from student where id <=20;`
-再创建 stu_v_2 视图，20 >= id >=10。
+> 再创建 stu_v_2 视图，20 >= id >=10。  
 `create or replace view stu_v_2 as select id,name from stu_v_1 where id >=10 with cascaded check option;`
-再创建 stu_v_3 视图， 
-`create or replace view stu_v_3 as select id,name from stu_v_2 where id<=15;`
-这条数据能够成功，stu_v_3 没有开检查选项所以不会 去判断 id 是否小于等于15
-直接检查 是否满足 stu_v_2。
+> 再创建 stu_v_3 视图。     
+`create or replace view stu_v_3 as select id,name from stu_v_2 where id<=15;`  
+> 这条数据能够成功，stu_v_3 没有开检查选项所以不会 去判断 id 是否小于等于15, 直接检查 是否满足 stu_v_2。  
 `insert into stu_v_3 values(17,'Tom');`
 
 #### LOCAL
@@ -1427,18 +1436,17 @@ NOTE：如果没有开检查选项就不会进行检查。不同版本是不同�
 4. HAVING
 5. UNION 或者UNION ALL
 
-例子：
-使用了聚合函数，插入会失败。
-`create view stu_v_count as select count(*) from student;`
-`insert into stu_v_count values(10);`
+> 例子： 使用了聚合函数，插入会失败。
+`create view stu_v_count as select count(*) from student;`  
+`insert into stu_v_count values(10);`  
 
 作用
 
-视图不仅可以简化用户对数据的理解，也可以简化他们的操作。那些被经常使用的查询可以被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件。
+视图不仅可以简化用户对数据的理解，也可以简化他们的操作。那些被经常使用的查询可以被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件。 
 >安全
-数据库可以授权，但不能授权到数据库特定行和特定的列上。通过视图用户只能查询和修改他们所能见到的数据
+数据库可以授权，但不能授权到数据库特定行和特定的列上。通过视图用户只能查询和修改他们所能见到的数据  
 >数据独立
-视图可帮助用户屏蔽真实表结构变化带来的影响。
+视图可帮助用户屏蔽真实表结构变化带来的影响。  
 
 总而言之 类似于给表加上了一个外壳，通过这个外壳访问表的时候，只能按照所设计的方式进行访问与更新。
 
@@ -1454,17 +1462,18 @@ NOTE：如果没有开检查选项就不会进行检查。不同版本是不同�
 
 ### 创建
 
-`CREATE PROCEDURE 存储过程名称( [参数列表] ) `
+	`CREATE PROCEDURE 存储过程名称( [参数列表] ) `
 
-`BEGIN`
+	`BEGIN`
 
-` SQL 语句 `
+		` SQL 语句 `
 
-`END;`
+	`END;`
+
 
 NOTE: 在命令行中，执行创建存储过程的SQL时，需要通过关键字delimiter 指定SQL语句的结束符。默认是 分号作为结束符。
 
-delimiter $$ ,改为 $$ 符作为 结束符。
+delimiter $ ，则 $ 符作为结束符。
 
 ### 调用
 CALL 名称 ( [参数])
@@ -1496,9 +1505,9 @@ CALL 名称 ( [参数])
 >获取游标记录：
 `FETCH 游标名称INTO变量[变量]`
 
-条件处理程序：
-条件处理程序（Handler）可以用来定义在流程控制结构执行过程中遇到问题时相应的处理步骤。具体语法为：
-DECLARE handler action HANDLER FOR condition value L condition value]..statement
+条件处理程序：  
+条件处理程序（Handler）可以用来定义在流程控制结构执行过程中遇到问题时相应的处理步骤。具体语法为：  
+> DECLARE handler action HANDLER FOR condition value L condition value]..statement  
 
 handler_action CONTINUE：继续执行当前程序
 
@@ -1560,9 +1569,9 @@ NOTE：要先声明普通变量，再申请游标。
 
 		end;
 ## 触发器
-·介绍
-触发器是与表有关的数据库对象，指在insert/update/delete之前或之后，触发并执行触发器中定义的SQL语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性，日志记录，数据校验等操作。
-使用别名OLD和NEW来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发（比如说 一条语句影响了 5 行 则会被触发 5 次），不支持语句级触发（比如说 一条语句影响了 5 行 则会被触发 1 次）。
+介绍  
+触发器是与表有关的数据库对象，指在insert/update/delete之前或之后，触发并执行触发器中定义的SQL语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性，日志记录，数据校验等操作。   
+使用别名OLD和NEW来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发（比如说 一条语句影响了 5 行 则会被触发 5 次），不支持语句级触发（比如说 一条语句影响了 5 行 则会被触发 1 次）。  
 
 | 触发器类型      |                   NEW 和 OLD               			   | 
 | -------------  | -------------------------------------------------------|
@@ -1585,38 +1594,38 @@ NOTE : 针对事物才有加锁的意义。
 
 全局锁：
 
-全局锁就是对整个数据库实例加锁，加锁后整个实例就处于只读状态，后续的DML的写语句，DDL语句，已经更新操作的事务提交语句都将被阻塞。
-其典型的使用场景是做全库的逻辑备份，对所有的表进行锁定，从而获取一致性视图，保证数据的完整性。
+全局锁就是对整个数据库实例加锁，加锁后整个实例就处于只读状态，后续的DML的写语句，DDL语句，已经更新操作的事务提交语句都将被阻塞。  
+其典型的使用场景是做全库的逻辑备份，对所有的表进行锁定，从而获取一致性视图，保证数据的完整性。  
 
 表锁：
 
-表级锁，每次操作锁住整张表。锁定粒度大，发生锁冲突的概率最高，并发度最低。应用在MyISAM、InnoDB、BDB等存储引擎中。
+表级锁，每次操作锁住整张表。锁定粒度大，发生锁冲突的概率最高，并发度最低。应用在MyISAM、InnoDB、BDB等存储引擎中。  
 
 对于表级锁，主要分为以下三类：
 
-1. 表锁：对于表锁，分为两类：1.表共享读锁（read lock）所有的事物都只能读（当前加锁的客户端也只能读，不能写），不能写 2.表独占写锁（write lock），对当前加锁的客户端，可读可写，对于其他的客户端，不可读也不可写。 
+1. 表锁：对于表锁，分为两类：1.表共享读锁（read lock）所有的事物都只能读（当前加锁的客户端也只能读，不能写），不能写 2.表独占写锁（write lock），对当前加锁的客户端，可读可写，对于其他的客户端，不可读也不可写。   
 读锁不会阻塞其他客户端的读，但是会阻塞写。写锁既会阻塞其他客户端的读，又会阻塞其他客户端的写。
 
-2. 元数据锁（meta data lock，MDL），MDL加锁过程是系统自动控制，无需显式使用，在访问一张表的时候会自动加上。MDL锁主要作用是维护表元数据的数据一致性，在表上有活动事务的时候，不可以对元数据进行写入操作。在MySQL5.5中引入了MDL，当对一张表进行增删改查的时候，加MDL读锁（共享）;当对表结构进行变更操作的时候，加MDL写锁（排他）。
+2. 元数据锁（meta data lock，MDL），MDL加锁过程是系统自动控制，无需显式使用，在访问一张表的时候会自动加上。MDL锁主要作用是维护表元数据的数据一致性，在表上有活动事务的时候，不可以对元数据进行写入操作。在MySQL5.5中引入了MDL，当对一张表进行增删改查的时候，加MDL读锁（共享）;当对表结构进行变更操作的时候，加MDL写锁（排他）。  
 
-3. 意向锁: 为了避免DML在执行时，加的行锁与表锁的冲突，在InnoDB中引入了意向锁，使得表锁不用检查每行数据是否加锁，使用意向锁来减少表锁的检查。
-一个客户端对某一行加上了行锁，那么系统也会对其加上一个意向锁，当别的客户端来想要对其加上表锁时，便会检查意向锁是否兼容，若是不兼容，便会阻塞直到意向锁释放。
+3. 意向锁: 为了避免DML在执行时，加的行锁与表锁的冲突，在InnoDB中引入了意向锁，使得表锁不用检查每行数据是否加锁，使用意向锁来减少表锁的检查。  
+一个客户端对某一行加上了行锁，那么系统也会对其加上一个意向锁，当别的客户端来想要对其加上表锁时，便会检查意向锁是否兼容，若是不兼容，便会阻塞直到意向锁释放。  
 
 意向锁兼容性：
-1. 意向共享锁（IS）：与表锁共享锁（read）兼容，与表锁排它锁（write）互斥。
-2. 意向排他锁（lX）：与表锁共享锁（read）及排它锁（write）都互斥。意向锁之间不会互斥。
+1. 意向共享锁（IS）：与表锁共享锁（read）兼容，与表锁排它锁（write）互斥。  
+2. 意向排他锁（lX）：与表锁共享锁（read）及排它锁（write）都互斥。意向锁之间不会互斥。  
 
 
 行锁：
 
-行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在InnoDB存储引擎中。
-InnoDB的数据是基于索引组织的，行锁是通过对索引上的索引项加锁来实现的，而不是对记录加的锁。对于行级锁，主要分为以下三类：
+行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在InnoDB存储引擎中。  
+InnoDB的数据是基于索引组织的，行锁是通过对索引上的索引项加锁来实现的，而不是对记录加的锁。对于行级锁，主要分为以下三类：  
 
 1. 行锁（Record Lock）：锁定单个行记录的锁，防止其他事务对此行进行update和delete。在RC（read commit ）、RR（repeat read）隔离级别下都支持。
 2. 间隙锁（GapLock）：锁定索引记录间隙（不含该记录），确保索引记录间隙不变，防止其他事务在这个间隙进行insert，产生幻读。在RR隔离级别下都支持。比如说 两个临近叶子节点为 15 23，那么间隙就是指 [15 , 23],锁的是这个间隙。
 3. 临键锁（Next-Key Lock）：行锁和间隙锁组合，同时锁住数据，并锁住数据前面的间隙Gap。在RR隔离级别下支持。
 
-InnoDB实现了以下两种类型的行锁：
+InnoDB实现了以下两种类型的行锁：  
 1. 共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排它锁。
 2. 排他锁（X）：允许获取排他锁的事务更新数据，阻止其他事务获得相同数据集的共享锁和排他锁。
 
@@ -1629,7 +1638,7 @@ InnoDB实现了以下两种类型的行锁：
 | select　lock　in　share mode  | 排他锁       | 需要手动在SELECT之后加LOCK IN SHARE MODE |
 | select　for　update	      | 排他锁 	  | 需要手动在SELECT之后加FOR UPDATE 　　　　|
 
-行锁 - 演示
+行锁 - 演示  
 
 默认情况下，InnoDB在REPEATABLE READ事务隔离级别运行，InnoDB使用next-key 锁进行搜索和索引扫描，以防止幻读。
 
@@ -1662,19 +1671,20 @@ InnoDB实现了以下两种类型的行锁：
 
 ### 架构
 
-插入图 artic
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic.png )
 
 Buffer Pool：缓冲池是主内存中的一个区域，里面可以缓存磁盘上经常操作的真实数据，在执行增删改查操作时，先操作缓冲池中的数据（若缓冲池没有数据，则从磁盘加载并缓存），然后再以一定频率刷新到磁盘，从而减少磁盘I0，加快处理速度。
 
-插入图 artic2
-插入图 artic3
-插入图 artic4  
-插入图 artic5
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic2.png )
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic3.png )
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic4.png )
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic5.png )
+
 
 磁盘架构：
-插入图 artic6
-插入图 artic7
-插入图 artic8
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic6.png )
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic7.png )
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/artic8.png )
 
 InnoDB的整个体系结构为：
 
@@ -1719,17 +1729,17 @@ MVCC 原理:
 
 有三个隐藏的字段:
 
-插入图 MVCC
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/MVCC.png )
 
 undo log 版本链：
 
 undo log日志会记录原来的版本的数据，因为是通过undo log 日志进行回滚的。
 
-插入图 MVCCList
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/MVCCList.png )
 
 如何确定返回哪一个版本 这是由read view决定的。
 
-https://www.bilibili.com/video/BV1Kr4y1i7ru?p=145&spm_id_from=pageDriver&vd_source=bbc04b831b54029788a178a7c2e9ae20
+> https://www.bilibili.com/video/BV1Kr4y1i7ru?p=145&spm_id_from=pageDriver&vd_source=bbc04b831b54029788a178a7c2e9ae20
 
 MVCC 靠 隐藏字段 , undo log 版本链 , read view 实现的。
 
@@ -1737,6 +1747,8 @@ MVCC 靠 隐藏字段 , undo log 版本链 , read view 实现的。
 * 持久性-redo log
 * 一致性-undo log+redo log
 * 隔离性-锁+MVCC
+
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/readview.png )
 
 # 数据类型
 
