@@ -13,19 +13,18 @@
 
 #### 数据库操作
 
--查询所有数据库
--`SHOW DATABASES;`
--查询当前数据库
+查询所有数据库：
+`SHOW DATABASES;`
+查询当前数据库：
 `SELECT DATABASE();`
-创建数据库
+创建数据库：
 `CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];`
-删除数据库
+删除数据库：
 `DROP DATABASE [ IF EXISTS ] 数据库名;`
-使用数据库
+使用数据库：
 `USE 数据库名;`
 
 ##### 注意事项
-
 
 - UTF8字符集长度为3字节，有些符号占4字节，所以推荐用utf8mb4字符集
 
@@ -1238,7 +1237,6 @@ phone 和 name 都建立了索引情况下，这句只会用到phone索引字段
 
 ![image](https://github.com/Buildings-Lei/mysql_note/tree/main/images/uion.png)
 
-
 ##### 注意事项
 
 - 多条件联合查询时，MySQL优化器会评估哪个字段的索引效率更高，会选择该索引完成本次查询。
@@ -1259,9 +1257,9 @@ phone 和 name 都建立了索引情况下，这句只会用到phone索引字段
 
 普通插入：
 
-1. 采用批量插入（一次插入的数据不建议超过1000条）
+1. 采用批量插入（一次插入的数据不建议超过1000条，500 - 1000 为宜）
 2. 手动提交事务
-3. 主键顺序插入
+3. 主键顺序插入（主键顺序插入的效率大于乱序插入）
 
 大批量插入：
 如果一次性需要插入大批量数据，使用insert语句插入性能较低，此时可以使用MySQL数据库提供的load指令插入。
@@ -1272,7 +1270,7 @@ mysql --local-infile -u root -p
 # 设置全局参数local_infile为1，开启从本地加载文件导入数据的开关
 set global local_infile = 1;
 select @@local_infile;
-# 执行load指令将准备好的数据，加载到表结构中
+# 执行load指令将准备好的数据，加载到表结构中，先要把表建立起来。
 load data local infile '/root/sql1.log' into table 'tb_user' fields terminated by ',' lines terminated by '\n';
 ```
 
@@ -1280,7 +1278,12 @@ load data local infile '/root/sql1.log' into table 'tb_user' fields terminated b
 
 数据组织方式：在InnoDB存储引擎中，表数据都是根据主键顺序组织存放的，这种存储方式的表称为索引组织表（Index organized table, IOT）
 
+主键的顺序的插入过程如下：
+插入图片keysort.png
+但是如果主键是乱序插入的话，就会导致需要插入的位置为中间的位置，会有页分裂的过程。
+
 页分裂：页可以为空，也可以填充一般，也可以填充100%，每个页包含了2-N行数据（如果一行数据过大，会行溢出），根据主键排列。
+
 页合并：当删除一行记录时，实际上记录并没有被物理删除，只是记录被标记（flaged）为删除并且它的空间变得允许被其他记录声明使用。当页中删除的记录到达 MERGE_THRESHOLD（默认为页的50%），InnoDB会开始寻找最靠近的页（前后）看看是否可以将这两个页合并以优化空间使用。
 
 MERGE_THRESHOLD：合并页的阈值，可以自己设置，在创建表或创建索引时指定
@@ -1289,9 +1292,9 @@ MERGE_THRESHOLD：合并页的阈值，可以自己设置，在创建表或创�
 
 主键设计原则：
 
-- 满足业务需求的情况下，尽量降低主键的长度
+- 满足业务需求的情况下，尽量降低主键的长度，二级索引的叶子节点保存的就是主键，所以主键小占用的空间也就会少。
 - 插入数据时，尽量选择顺序插入，选择使用 AUTO_INCREMENT 自增主键
-- 尽量不要使用 UUID 做主键或者是其他的自然主键，如身份证号
+- 尽量不要使用 UUID 做主键或者是其他的自然主键，如身份证号，占用的空间大。
 - 业务操作时，避免对主键的修改
 
 ### order by优化
@@ -1358,9 +1361,382 @@ count的几种用法：
 
 InnoDB 的行锁是针对索引加的锁，不是针对记录加的锁，并且该索引不能失效，否则会从行锁升级为表锁。
 
+
 如以下两条语句：
 `update student set no = '123' where id = 1;`，这句由于id有主键索引，所以只会锁这一行；
-`update student set no = '123' where name = 'test';`，这句由于name没有索引，所以会把整张表都锁住进行数据更新，解决方法是给name字段添加索引
+`update student set no = '123' where name = 'test';`，这句由于name没有索引，所以会把整张表都锁住进行数据更新，解决方法是给name字段添加索引，就可以由表锁变成行锁。
+
+
+## 视图
+
+视图（View）是一种虚拟存在的表。视图中的数据并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。
+通俗的讲，视图只保存了查询的SQL逻辑，不保存查询结果。所以我们在创建视图的时候，主要的工作就落在创建这条SQL查询语句上。
+
+### 创建视图
+
+`CREATE [ OR REPLACE ] VIEW 视图名称[（列名列表）] AS SELECT 语句 [ WITH [ CASCADED | LOCAL ] CHECK OPTION ]`
+
+例子：
+` create or replace view stu_wll as select id,name from student where id<=10; `
+
+### 查询视图
+查看创建视图语句：`SHOW CREATE VIEW `视图名称；
+查看视图数据：`SELECT*FROM ` 视图名称；
+`show create view stu_v_1;`
+
+### 修改视图
+方式一：`CREATE[OR REPLACE] VIEW 视图名称[（列名列表)）] AS SELECT 语句[ WITH[ CASCADED | LOCAL ] CHECK OPTION ]`
+
+方式二：`ALTER VIEW 视图名称 [（列名列表)] AS SELECT语句 [WITH [CASCADED | LOCAL] CHECK OPTION]`
+
+### 删除视图
+
+`DROP VIEW [IF EXISTS] 视图名称 [视图名称]`
+
+### 视图检查选项
+
+当使用WITH CHECK QPTION子句创建视图时，MySQL会通过视图检查正在更改的每个行，例如插入，更新，删除，以使其符合视图的定义。MySQL允许基于另一个视图创建视图，它还会检查依赖视图中的规则以保持一致性。为了确定检查的范围，mysql提供了两个选项：CASCADED 和 LOCAL ，默认值为 CASCADED。
+
+NOTE：如果没有开检查选项就不会进行检查。不同版本是不同含义的，要看版本。
+
+#### CASCADED
+`级联，一旦选择了这个选项，除了会检查创建视图时候的条件，还会检查所依赖视图的条件。`
+
+比如下面的例子：
+创建stu_V_l 视图，id是小于等于 20的。
+`create or replace view stu_V_l as select id,name from student where id <=20;`
+再创建 stu_v_2 视图，20 >= id >=10。
+`create or replace view stu_v_2 as select id,name from stu_v_1 where id >=10 with cascaded check option;`
+再创建 stu_v_3 视图， 
+`create or replace view stu_v_3 as select id,name from stu_v_2 where id<=15;`
+这条数据能够成功，stu_v_3 没有开检查选项所以不会 去判断 id 是否小于等于15
+直接检查 是否满足 stu_v_2。
+`insert into stu_v_3 values(17,'Tom');`
+
+#### LOCAL
+
+本地的条件也会检查，还会向上检查。在向上找的时候，就要看是否上面开了检查选项，如果没开就不检查。和 CASCADED 的区别就是 CASCADED 不管上面开没开检查选项都会进行检查。
+
+### 更新及作用
+
+要使视图可更新，视图中的行与基础表中的行之间必须存在一对一的关系。如果视图包含以下任何一项，则该视图不可更新
+
+1. 聚合函数或窗口函数 ( SUM()、MIN()、MAX()、COUNT() 等 )
+2. DISTINCT
+3. GROUP BY
+4. HAVING
+5. UNION 或者UNION ALL
+
+例子：
+使用了聚合函数，插入会失败。
+`create view stu_v_count as select count(*) from student;`
+`insert into stu_v_count values(10);`
+
+作用
+
+视图不仅可以简化用户对数据的理解，也可以简化他们的操作。那些被经常使用的查询可以被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件。
+>安全
+数据库可以授权，但不能授权到数据库特定行和特定的列上。通过视图用户只能查询和修改他们所能见到的数据
+>数据独立
+视图可帮助用户屏蔽真实表结构变化带来的影响。
+
+总而言之 类似于给表加上了一个外壳，通过这个外壳访问表的时候，只能按照所设计的方式进行访问与更新。
+
+## 存储过程
+
+存储过程是事先经过编译并存储在数据库中的一段SQL 语句的集合，调用存储过程可以简化应用开发人员的很多工作，减少数据在数据库和应用服务器之间的传输，对于提高数据处理的效率是有好处的。
+存储过程思想上很简单，就是数据库SQL 语言层面的代码封装与重用。
+
+特点
+1. 封装
+2. 复用
+3. 可以接收参数，也可以返回数据减少网络交互，效率提升
+
+### 创建
+
+`CREATE PROCEDURE 存储过程名称( [参数列表] ) `
+
+`BEGIN`
+
+` SQL 语句 `
+
+`END;`
+
+NOTE: 在命令行中，执行创建存储过程的SQL时，需要通过关键字delimiter 指定SQL语句的结束符。默认是 分号作为结束符。
+
+delimiter $$ ,改为 $$ 符作为 结束符。
+
+### 调用
+CALL 名称 ( [参数])
+
+### 查看
+
+查询指定数据库的存储过程及状态信息
+
+`SELECT* FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_SCHEMA = 'xxx' `
+
+存储过程名称；--查询某个存储过程的定义
+
+`SHOW CREATE PROCEDURE`
+
+### 删除
+
+`DROP PROCEDURE [ IFEXISTS ] 存储过程名称`
+
+### 游标
+
+游标（CURSOR）是用来存储查询结果集的数据类型，在存储过程和函数中可以使用游标对结果集进行循环的处理。游标的使用包括游标的声明、OPEN、FETCH和CLOSE，其语法分别如下。
+
+>声明游标：
+`DECLARE 游标名称 CURSOR FOR 查询语句`
+
+>打开游标：
+`OPEN 游标名称`
+
+>获取游标记录：
+`FETCH 游标名称INTO变量[变量]`
+
+条件处理程序：
+条件处理程序（Handler）可以用来定义在流程控制结构执行过程中遇到问题时相应的处理步骤。具体语法为：
+DECLARE handler action HANDLER FOR condition value L condition value]..statement
+
+handler_action CONTINUE：继续执行当前程序
+
+EXIT：终止执行当前程序
+
+condition_value :
+
+`SQLSTATE sqlstate_value：状态码，如02000`
+
+`SQLWARNING：所有以01开头的SQLSTATE代码的简写`
+
+`NOT FOUND：所有以02开头的SQLSTATE代码的简写`
+
+`SQLEXCEPTION：所有没有被SQLWARNING或NOT FOUND捕获的SQLSTATE代码的简写`
+
+例子：
+
+NOTE：要先声明普通变量，再申请游标。
+
+要求：
+`根据传入的参数uage，来查询用户表tb_user中，所有的用户年龄小于等于uage的用户姓名（name）和专业（profession），并将用户的姓名和专业插入到所创建的一张新表（id，name，profession）中。`
+
+	create procedure p1l(in uage int)
+
+		begin
+
+			declare uname varchar(100); 
+
+			decLare upro varchar(100);
+
+			declare u_cursor cursor for select name,profession from tb_user where age <= uage; 
+
+			当 条件处理程序的处理的状态码为02000的时候，就会退出。
+			declare exit handler for SQLSTATE '02000'close u_cursor;
+
+			drop table if exists tb_user_pro; 
+
+			create table if not exists tb_user_pro(
+
+			id int primary key auto_increment, 
+
+			name varchar(100), 
+
+			profession varchar(100)
+
+			);
+
+			open u_cursor; 
+
+			while true do 
+
+			fetch u_cursor into uname,Upro; 
+
+			insert into tb_user_pro values(null,uname,Upro); 
+
+			end while;
+
+			close u_cursor; 
+
+		end;
+## 触发器
+·介绍
+触发器是与表有关的数据库对象，指在insert/update/delete之前或之后，触发并执行触发器中定义的SQL语句集合。触发器的这种特性可以协助应用在数据库端确保数据的完整性，日志记录，数据校验等操作。
+使用别名OLD和NEW来引用触发器中发生变化的记录内容，这与其他的数据库是相似的。现在触发器还只支持行级触发（比如说 一条语句影响了 5 行 则会被触发 5 次），不支持语句级触发（比如说 一条语句影响了 5 行 则会被触发 1 次）。
+
+| 触发器类型      |                   NEW 和 OLD               			   | 
+| -------------  | -------------------------------------------------------|
+| INSERT         | NEW 表示将要或者已经新增的数据              				| 
+| UPDATE         | OLD表示修改之前的数据，NEW表示将要或已经修改后的数据       |
+| DELETE         | OLD表示将要或者已经删除的数据                            |
+
+
+## 锁
+
+锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（CPU、RAM、I/O）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。
+
+NOTE : 针对事物才有加锁的意义。
+
+分类：MySQL中的锁，按照锁的粒度分，分为以下三类：
+
+1. 全局锁：锁定数据库中的所有表。
+2. 表级锁：每次操作锁住整张表。
+3. 行级锁：每次操作锁住对应的行数据。
+
+全局锁：
+
+全局锁就是对整个数据库实例加锁，加锁后整个实例就处于只读状态，后续的DML的写语句，DDL语句，已经更新操作的事务提交语句都将被阻塞。
+其典型的使用场景是做全库的逻辑备份，对所有的表进行锁定，从而获取一致性视图，保证数据的完整性。
+
+表锁：
+
+表级锁，每次操作锁住整张表。锁定粒度大，发生锁冲突的概率最高，并发度最低。应用在MyISAM、InnoDB、BDB等存储引擎中。
+
+对于表级锁，主要分为以下三类：
+
+1. 表锁：对于表锁，分为两类：1.表共享读锁（read lock）所有的事物都只能读（当前加锁的客户端也只能读，不能写），不能写 2.表独占写锁（write lock），对当前加锁的客户端，可读可写，对于其他的客户端，不可读也不可写。 
+读锁不会阻塞其他客户端的读，但是会阻塞写。写锁既会阻塞其他客户端的读，又会阻塞其他客户端的写。
+
+2. 元数据锁（meta data lock，MDL），MDL加锁过程是系统自动控制，无需显式使用，在访问一张表的时候会自动加上。MDL锁主要作用是维护表元数据的数据一致性，在表上有活动事务的时候，不可以对元数据进行写入操作。在MySQL5.5中引入了MDL，当对一张表进行增删改查的时候，加MDL读锁（共享）;当对表结构进行变更操作的时候，加MDL写锁（排他）。
+
+3. 意向锁: 为了避免DML在执行时，加的行锁与表锁的冲突，在InnoDB中引入了意向锁，使得表锁不用检查每行数据是否加锁，使用意向锁来减少表锁的检查。
+一个客户端对某一行加上了行锁，那么系统也会对其加上一个意向锁，当别的客户端来想要对其加上表锁时，便会检查意向锁是否兼容，若是不兼容，便会阻塞直到意向锁释放。
+
+意向锁兼容性：
+1. 意向共享锁（IS）：与表锁共享锁（read）兼容，与表锁排它锁（write）互斥。
+2. 意向排他锁（lX）：与表锁共享锁（read）及排它锁（write）都互斥。意向锁之间不会互斥。
+
+
+行锁：
+
+行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在InnoDB存储引擎中。
+InnoDB的数据是基于索引组织的，行锁是通过对索引上的索引项加锁来实现的，而不是对记录加的锁。对于行级锁，主要分为以下三类：
+
+1. 行锁（Record Lock）：锁定单个行记录的锁，防止其他事务对此行进行update和delete。在RC（read commit ）、RR（repeat read）隔离级别下都支持。
+2. 间隙锁（GapLock）：锁定索引记录间隙（不含该记录），确保索引记录间隙不变，防止其他事务在这个间隙进行insert，产生幻读。在RR隔离级别下都支持。比如说 两个临近叶子节点为 15 23，那么间隙就是指 [15 , 23],锁的是这个间隙。
+3. 临键锁（Next-Key Lock）：行锁和间隙锁组合，同时锁住数据，并锁住数据前面的间隙Gap。在RR隔离级别下支持。
+
+InnoDB实现了以下两种类型的行锁：
+1. 共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排它锁。
+2. 排他锁（X）：允许获取排他锁的事务更新数据，阻止其他事务获得相同数据集的共享锁和排他锁。
+
+| SQL      			| 行锁类型     | 说明					    |
+| ------------------------------|------------------------------------------------------- |
+| insert      			| 排他锁  　   | 自动加锁 　　　　　　　　　　　　　　　  |
+| update      			| 排他锁  　   | 自动加锁				 |
+| delete     			| 排他锁       | 自动加锁 　　　　　　　　　　　　　　    |
+| select 			| 不加任何锁　 | 					   |
+| select　lock　in　share mode  | 排他锁       | 需要手动在SELECT之后加LOCK IN SHARE MODE |
+| select　for　update	      | 排他锁 	  | 需要手动在SELECT之后加FOR UPDATE 　　　　|
+
+行锁 - 演示
+
+默认情况下，InnoDB在REPEATABLE READ事务隔离级别运行，InnoDB使用next-key 锁进行搜索和索引扫描，以防止幻读。
+
+1. 针对唯一索引进行检索时，对已存在的记录进行等值匹配时，将会自动优化为行锁。
+2. InnoDB的行锁是针对于索引加的锁，不通过索引条件检索数据，那么InnoDB将对表中的所有记录加锁，此时就会升级为表锁。
+
+间隙锁/临键锁-演示
+
+默认情况下，InnoDB在REPEATABLE READ事务隔离级别运行，InnoDB使用next-key 锁进行搜索和索引扫描，以防止幻读。
+
+1. 索引上的等值查询（唯一索引），给不存在的记录加锁时，优化为间隙锁。
+2. 索引上的等值查询（普通索引），向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁。
+3. 索引上的范围查询（唯一索引）--会访问到不满足条件的第一个值为止。
+
+注意：间隙锁唯一目的是防止其他事务插入间隙。间隙锁可以共存，一个事务采用的间隙锁不会阻止另一个事务在同一间隙上采用间隙锁。
+
+## InnoDB 引擎
+
+### 逻辑存储结构
+
+表空间（ibd文件），一个mysql实例可以对应多个表空间，用于存储记录、索引等数据。
+
+段，分为数据段（Leaf node segment）、索引段（Non-leaf node segment）、回滚段（Rollback segment），InnoDB是索引组织表，数据段就是B+树的叶子节点，索引段即为B+树的非叶子节点。段用来管理多个Extent（区）。
+
+区，表空间的单元结构，每个区的大小为1M。默认情况下，InnoDB存储引擎页大小为16K，即一个区中一共有64个连续的页。
+
+页，是InnoDB存储引擎磁盘管理的最小单元，每个页的大小默认为16KB。为了保证页的连续性，InnoDB存储引擎每从磁盘申请4-5个区。一页包含若干行。
+
+行，InnoDB存储引擎数据是按进行存放的。
+
+### 架构
+
+插入图 artic
+
+Buffer Pool：缓冲池是主内存中的一个区域，里面可以缓存磁盘上经常操作的真实数据，在执行增删改查操作时，先操作缓冲池中的数据（若缓冲池没有数据，则从磁盘加载并缓存），然后再以一定频率刷新到磁盘，从而减少磁盘I0，加快处理速度。
+
+插入图 artic2
+插入图 artic3
+插入图 artic4  
+插入图 artic5
+
+磁盘架构：
+插入图 artic6
+插入图 artic7
+插入图 artic8
+
+InnoDB的整个体系结构为：
+
+当业务操作的时候直接操作的是内存缓冲区，如果缓冲区当中没有数据，则会从磁盘中加载到缓冲区，增删改查都是在缓冲区的，后台线程以一定的速率刷新到磁盘。
+
+## 事务原理
+事务是一组操作的集合，它是一个不可分割的工作单位，事务会把所有的操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时败。具有ACID四大特征。
+
+原子性，一致性，持久性这三大特性由 redo log 和 undo log 日志来保证的。
+隔离性 是由锁机制和MVCC保证的。
+
+redo log:
+
+重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的持久性。
+该日志文件由两部分组成：重做日志缓冲（redo log buffer）以及重做日志文件（redo log file），前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中，用于在刷新脏页到磁盘，发生错误时，进行数据恢复使用。
+
+undo log:
+回滚日志，用于记录数据被修改前的信息，作用包含两个：提供回滚和MVCC（多版本并发控制）。
+undo log和redo log记录物理日志不一样，它是逻辑日志。可以认为当delete一条记录，undo log中会记录一条对应的insert记录，反之亦然，当update一条记录时，它记录一条对应相反的update记录。当执行rollback时，就可以从undo log中的逻辑记录读取到相应的内容并进行回滚。
+Undo log销毁：undo log在事务执行时产生，事务提交时，并不会立即删除undo log，因为这些日志可能还用于MVCC。
+Undo log存储：undo log采用段的方式进行管理和记录，存放在前面介绍的rollback segment回滚段中，内部包含1024个undo log segment。
+
+## MVCC
+当前读:
+
+读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。对于我们日常的操作，如：
+* select...lock in share mode（共享锁）。
+* select..…for update、update、insert、delete（排他锁）都是一种当前读。
+
+快照读:
+
+简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁，是非阻塞读。
+* Read Committed：每次select，都生成一个快照读。
+* Repeatable Read：开启事务后第一个select语句才是快照读的地方。
+* Serializable：快照读会退化为当前读。
+
+MVCC: 
+
+全称Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本，使得读写操作没有冲突，快照读为MySQL实现MVCC提供了一个非阻塞读功能。MVCC的具体实现，还需要依赖于数据库记录中的三个隐式字段、undo log日志、readView。
+
+MVCC 原理:
+
+有三个隐藏的字段:
+
+插入图 MVCC
+
+undo log 版本链：
+
+undo log日志会记录原来的版本的数据，因为是通过undo log 日志进行回滚的。
+
+插入图 MVCCList
+
+如何确定返回哪一个版本 这是由read view决定的。
+
+https://www.bilibili.com/video/BV1Kr4y1i7ru?p=145&spm_id_from=pageDriver&vd_source=bbc04b831b54029788a178a7c2e9ae20
+
+MVCC 靠 隐藏字段 , undo log 版本链 , read view 实现的。
+
+* 原子性-undo log
+* 持久性-redo log
+* 一致性-undo log+redo log
+* 隔离性-锁+MVCC
 
 # 数据类型
 
