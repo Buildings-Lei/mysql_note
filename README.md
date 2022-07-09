@@ -1462,13 +1462,13 @@ NOTE：如果没有开检查选项就不会进行检查。不同版本是不同�
 
 ### 创建
 
-	`CREATE PROCEDURE 存储过程名称( [参数列表] ) `
+	CREATE PROCEDURE 存储过程名称( [参数列表] ) 
 
-	`BEGIN`
+	BEGIN
 
-		` SQL 语句 `
+		 SQL 语句 
 
-	`END;`
+	END;
 
 
 NOTE: 在命令行中，执行创建存储过程的SQL时，需要通过关键字delimiter 指定SQL语句的结束符。默认是 分号作为结束符。
