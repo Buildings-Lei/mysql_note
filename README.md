@@ -1701,35 +1701,42 @@ redo log:
 重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的持久性。
 该日志文件由两部分组成：重做日志缓冲（redo log buffer）以及重做日志文件（redo log file），前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中，用于在刷新脏页到磁盘，发生错误时，进行数据恢复使用。
 
-undo log:
+> 个人理解： 事物每次提交的时候都会将数据刷到redo log中而不是直接将buffer pool中的数据直接刷到磁盘中（ibd文件中），是因为redo log 是顺序写，性能处理的够快，直接刷到ibd中，是随机写，性能慢。所以脏页是在下一次读的时候，或者后台线程采用一定的机制进行刷盘到ibd中。
+
+undo log:  
 回滚日志，用于记录数据被修改前的信息，作用包含两个：提供回滚和MVCC（多版本并发控制）。
-undo log和redo log记录物理日志不一样，它是逻辑日志。可以认为当delete一条记录，undo log中会记录一条对应的insert记录，反之亦然，当update一条记录时，它记录一条对应相反的update记录。当执行rollback时，就可以从undo log中的逻辑记录读取到相应的内容并进行回滚。
-Undo log销毁：undo log在事务执行时产生，事务提交时，并不会立即删除undo log，因为这些日志可能还用于MVCC。
-Undo log存储：undo log采用段的方式进行管理和记录，存放在前面介绍的rollback segment回滚段中，内部包含1024个undo log segment。
+undo log和redo log记录物理日志不一样，它是逻辑日志。可以认为当delete一条记录，undo log中会记录一条对应的insert记录，反之亦然，当update一条记录时，它记录一条对应相反的update记录。当执行rollback时，就可以从undo log中的逻辑记录读取到相应的内容并进行回滚。  
+
+> Undo log销毁：undo log在事务执行时产生，事务提交时，并不会立即删除undo log，因为这些日志可能还用于MVCC。
+> Undo log存储：undo log采用段的方式进行管理和记录，存放在前面介绍的rollback segment回滚段中，内部包含1024个undo log segment。
 
 ## MVCC
-当前读:
+### 当前读:
 
 读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。对于我们日常的操作，如：
 * select...lock in share mode（共享锁）。
 * select..…for update、update、insert、delete（排他锁）都是一种当前读。
 
-快照读:
+### 快照读:
 
 简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁，是非阻塞读。
 * Read Committed：每次select，都生成一个快照读。
 * Repeatable Read：开启事务后第一个select语句才是快照读的地方。
 * Serializable：快照读会退化为当前读。
 
-MVCC: 
+### MVCC: 
 
 全称Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本，使得读写操作没有冲突，快照读为MySQL实现MVCC提供了一个非阻塞读功能。MVCC的具体实现，还需要依赖于数据库记录中的三个隐式字段、undo log日志、readView。
 
-MVCC 原理:
+#### MVCC 实现原理:
 
 有三个隐藏的字段:
 
 ![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/MVCC.png )
+
+> undo log回滚日志，在insert、update、delete的时候产生的便于数据回滚的日志。
+> 当insert的时候，产生的undo log日志只在回滚时需要，在事务提交后，可被立即删除。
+> 而update、delete的时候，产生的undo log日志不仅在回滚时需要，在快照读时也需要，不会立即被删除。
 
 undo log 版本链：
 
@@ -1737,16 +1744,21 @@ undo log日志会记录原来的版本的数据，因为是通过undo log 日志
 
 ![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/MVCCList.png )
 
-如何确定返回哪一个版本 这是由read view决定的。
+如何确定返回哪一个版本 这是由read view决定返回 undo log 中的哪一个版本。
+
+![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/readview0.png )
+
+> RC隔离级别下，在事务中每一次执行快照读时生成ReadView。  
+> RR隔离级别下，在事务中第一次执行快照读时生成ReadView，后续会复用。  
 
 > https://www.bilibili.com/video/BV1Kr4y1i7ru?p=145&spm_id_from=pageDriver&vd_source=bbc04b831b54029788a178a7c2e9ae20
 
 MVCC 靠 隐藏字段 , undo log 版本链 , read view 实现的。
 
-* 原子性-undo log
+* 原子性-undo log 
 * 持久性-redo log
-* 一致性-undo log+redo log
-* 隔离性-锁+MVCC
+* 一致性-undo log + redo log
+* 隔离性-锁 + MVCC
 
 ![images](https://github.com/Buildings-Lei/mysql_note/blob/main/images/readview.png )
 
